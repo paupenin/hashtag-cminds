@@ -1,0 +1,107 @@
+{
+    "case": false,
+    "color": "#e2e3e5",
+    "tags": [
+        {
+            "tag": "liver",
+            "color": "#cce5ff"
+        },
+        {
+            "tag": "pain",
+            "color": "#f8d7da"
+        },
+        {
+            "tag": "right",
+            "color": "#d4edda"
+        },
+        {
+            "tag": "left",
+            "color": "#d4edda"
+        },
+        {
+            "tag": "pancreas",
+            "color": "#fff3cd"
+        },
+        {
+            "tag": "kidney",
+            "color": "#cce5ff"
+        },
+        {
+            "tag": "brain",
+            "color": "#cce5ff"
+        },
+        {
+            "tag": "severe_pain",
+            "color": "#f8d7da"
+        },
+        {
+            "tag": "tumour"
+        },
+        {
+            "tag": "cancer"
+        },
+        {
+            "tag": "MRI"
+        },
+        {
+            "tag": "CT"
+        },
+        {
+            "tag": "male"
+        },
+        {
+            "tag": "female"
+        },
+        {
+            "tag": "bone"
+        },
+        {
+            "tag": "shoulder"
+        },
+        {
+            "tag": "hip"
+        },
+        {
+            "tag": "XRAY"
+        },
+        {
+            "tag": "knee"
+        },
+        {
+            "tag": "spine"
+        },
+        {
+            "tag": "head"
+        },
+        {
+            "tag": "abdomen"
+        },
+        {
+            "tag": "contrast"
+        },
+        {
+            "tag": "fragment"
+        },
+        {
+            "tag": "detached"
+        },
+        {
+            "tag": "injury"
+        },
+        {
+            "tag": "torn"
+        },
+        {
+            "tag": "rotator"
+        },
+        {
+            "tag": "cuff"
+        },
+        {
+            "tag": "abdominal"
+        },
+        {
+            "tag": "dilatation"
+        }
+    ]
+}
