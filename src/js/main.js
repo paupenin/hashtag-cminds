@@ -4,9 +4,9 @@
 class hashtagHelper {
 
     constructor(element, options) {
-        this.setOptions(options);
-        this.setElement(element);
-        this.init();
+        this.setOptions(options)
+        this.setElement(element)
+        this.init()
     }
 
     setOptions(options) {
@@ -41,7 +41,10 @@ class hashtagHelper {
         this.bindContentEditable()
 
         // Position Caret at end
-        this.setCaretPos(this.getElementValue().length - 1)
+        this.setCaretPos(this.getElementValue().length)
+
+        // Show Taglist if in valid tag
+        this.checkTaglist()
     }
 
     /**
@@ -105,13 +108,27 @@ class hashtagHelper {
                 return (tag.tag == value)
             }
             return (tag.tag.toLowerCase() == value.toLowerCase())
-        });
+        })
+    }
+
+    findTags(value) {
+        if (! this.op.tags) return null
+
+        value = value.substr(1)
+
+        return this.op.tags.filter((tag) => {
+            if (this.op.case) {
+                return tag.tag.startsWith(value)
+            }
+            return tag.tag.toLowerCase().startsWith(value.toLowerCase())
+        })
     }
 
     bindContentEditable() {
         this.ce.addEventListener("input", () => {
-            this.setContent(this.ce.innerText);
-            this.createContentTags();
+            this.setContent(this.ce.innerText)
+            this.createContentTags()
+            this.checkTaglist()
         }, false)
     }
 
@@ -119,10 +136,11 @@ class hashtagHelper {
      * Caret position
      */
     getAllTextnodes(){
-        let n, a=[], walk=document.createTreeWalker(this.ce,NodeFilter.SHOW_TEXT,null,false);
-        while(n=walk.nextNode()) a.push(n);
-        return a;
+        let n, a=[], walk=document.createTreeWalker(this.ce,NodeFilter.SHOW_TEXT,null,false)
+        while(n=walk.nextNode()) a.push(n)
+        return a
     }
+
     getCaretPos() {
         this.ce.focus()
 
@@ -133,10 +151,15 @@ class hashtagHelper {
 
         return range.toString().length
     }
+
+    getCaretNode() {
+        return document.getSelection().getRangeAt(0).startContainer.parentElement
+    }
+
     setCaretPos(position) {
         this.ce.focus()
 
-        if (position<=0) return
+        if (position <= 0) return;
 
         // Get node element
         let node, nodes = this.getAllTextnodes()
@@ -150,8 +173,12 @@ class hashtagHelper {
             }
         }
 
-        if (! node) return
-        
+        // End of content
+        if (! node) {
+            node = nodes[nodes.length-1]
+            position = node.length
+        }
+
         // Set cursor position
         let sel = window.getSelection()
         let range = document.createRange()
@@ -159,6 +186,83 @@ class hashtagHelper {
         range.collapse(true)
         sel.removeAllRanges()
         sel.addRange(range)
+    }
+    
+
+    setCaretPosAfterNode(node) {
+        this.ce.focus()
+
+        if (! node) return
+
+        // Find textnode
+        if (node.nodeType != 3) node = node.childNodes[0]
+
+        let position = node.length
+
+        // Set cursor position
+        let sel = window.getSelection()
+        let range = document.createRange()
+        range.setStart(node, position)
+        range.collapse(true)
+        sel.removeAllRanges()
+        sel.addRange(range)
+    }
+
+    /**
+     * Tag List functions
+     */
+    checkTaglist() {
+        this.hideTaglist()
+
+        let node = this.getCaretNode()
+
+        if (node && node.nodeName == 'SPAN') {
+            let tags = this.findTags(node.innerText)
+            if (tags.length > 0) {
+                this.showTaglist(node, tags)
+            }
+        }
+    }
+
+    showTaglist(element, tags) {
+        this.hideTaglist()
+
+        this.tl = document.createElement('ul')
+        
+        this.tl.setAttribute('class', 'hashtag-cminds-tag-list')
+
+        this.tl.style.top = element.getBoundingClientRect().top + 'px'
+        this.tl.style.left = element.getBoundingClientRect().left + 'px'
+
+        tags.forEach((tag) => {
+            let li = document.createElement('li')
+
+            li.innerHTML = tag.tag
+            li.style.background = (tag.color) ? tag.color : this.op.color
+            
+            li.addEventListener("click", () => {
+                this.selectTaglist(element, tag)
+            }, false)
+
+            this.tl.appendChild(li)
+        })
+
+        document.body.appendChild(this.tl)
+    }
+
+    hideTaglist() {
+        if (this.tl) {
+            document.body.removeChild(this.tl)
+            delete this.tl
+        }
+    }
+
+    selectTaglist(element, tag) {
+        element.innerHTML = '#' + tag.tag
+        element.style.background = (tag.color) ? tag.color : this.op.color
+
+        this.hideTaglist()
+        this.setCaretPosAfterNode(element)
     }
 }
 
