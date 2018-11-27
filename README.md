@@ -16,7 +16,7 @@ The resulting field should:
 <script src="dist/js/hashtag-cminds.js"></script>
 
 <script>
-    hashtagCM(document.getElementById('#my-textarea'), options);
+    hashtagCM('#my-textarea', options);
 </script>
 ```
 

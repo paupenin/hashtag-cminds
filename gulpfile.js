@@ -59,9 +59,7 @@ gulp.task('watch', function() {
     gulp.start(['scripts','sass','demo']);
 
     browserSync.init({
-        server: {
-            baseDir: "dist/demo"
-        }
+        server: ["dist/demo","dist/js","dist/css"]
     });
 
     gulp.watch('src/demo/*', ['demo']).on("change", browserSync.reload);
