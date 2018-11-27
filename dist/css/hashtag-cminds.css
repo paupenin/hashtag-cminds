@@ -1,2 +1,12 @@
 .hashtag-cminds-content-editable {
   overflow-y: scroll; }
+
+.hashtag-cminds-tag-list {
+  position: absolute;
+  margin-top: 22px;
+  padding: 0;
+  list-style: none;
+  max-height: 300px;
+  overflow-y: scroll; }
+  .hashtag-cminds-tag-list li {
+    padding: 3px 6px; }

@@ -58,7 +58,9 @@ function () {
       this.createContentTags();
       this.bindContentEditable(); // Position Caret at end
 
-      this.setCaretPos(this.getElementValue().length - 1);
+      this.setCaretPos(this.getElementValue().length); // Show Taglist if in valid tag
+
+      this.checkTaglist();
     }
     /**
      * Content Editable functions
@@ -132,14 +134,31 @@ function () {
       });
     }
   }, {
-    key: "bindContentEditable",
-    value: function bindContentEditable() {
+    key: "findTags",
+    value: function findTags(value) {
       var _this3 = this;
 
-      this.ce.addEventListener("input", function () {
-        _this3.setContent(_this3.ce.innerText);
+      if (!this.op.tags) return null;
+      value = value.substr(1);
+      return this.op.tags.filter(function (tag) {
+        if (_this3.op.case) {
+          return tag.tag.startsWith(value);
+        }
 
-        _this3.createContentTags();
+        return tag.tag.toLowerCase().startsWith(value.toLowerCase());
+      });
+    }
+  }, {
+    key: "bindContentEditable",
+    value: function bindContentEditable() {
+      var _this4 = this;
+
+      this.ce.addEventListener("input", function () {
+        _this4.setContent(_this4.ce.innerText);
+
+        _this4.createContentTags();
+
+        _this4.checkTaglist();
       }, false);
     }
     /**
@@ -173,6 +192,11 @@ function () {
       return range.toString().length;
     }
   }, {
+    key: "getCaretNode",
+    value: function getCaretNode() {
+      return document.getSelection().getRangeAt(0).startContainer.parentElement;
+    }
+  }, {
     key: "setCaretPos",
     value: function setCaretPos(position) {
       this.ce.focus();
@@ -188,9 +212,14 @@ function () {
           node = nodes[i];
           break;
         }
-      }
+      } // End of content
 
-      if (!node) return; // Set cursor position
+
+      if (!node) {
+        node = nodes[nodes.length - 1];
+        position = node.length;
+      } // Set cursor position
+
 
       var sel = window.getSelection();
       var range = document.createRange();
@@ -198,6 +227,78 @@ function () {
       range.collapse(true);
       sel.removeAllRanges();
       sel.addRange(range);
+    }
+  }, {
+    key: "setCaretPosAfterNode",
+    value: function setCaretPosAfterNode(node) {
+      this.ce.focus();
+      if (!node) return; // Find textnode
+
+      if (node.nodeType != 3) node = node.childNodes[0];
+      var position = node.length; // Set cursor position
+
+      var sel = window.getSelection();
+      var range = document.createRange();
+      range.setStart(node, position);
+      range.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+    /**
+     * Tag List functions
+     */
+
+  }, {
+    key: "checkTaglist",
+    value: function checkTaglist() {
+      this.hideTaglist();
+      var node = this.getCaretNode();
+
+      if (node && node.nodeName == 'SPAN') {
+        var tags = this.findTags(node.innerText);
+
+        if (tags.length > 0) {
+          this.showTaglist(node, tags);
+        }
+      }
+    }
+  }, {
+    key: "showTaglist",
+    value: function showTaglist(element, tags) {
+      var _this5 = this;
+
+      this.hideTaglist();
+      this.tl = document.createElement('ul');
+      this.tl.setAttribute('class', 'hashtag-cminds-tag-list');
+      this.tl.style.top = element.getBoundingClientRect().top + 'px';
+      this.tl.style.left = element.getBoundingClientRect().left + 'px';
+      tags.forEach(function (tag) {
+        var li = document.createElement('li');
+        li.innerHTML = tag.tag;
+        li.style.background = tag.color ? tag.color : _this5.op.color;
+        li.addEventListener("click", function () {
+          _this5.selectTaglist(element, tag);
+        }, false);
+
+        _this5.tl.appendChild(li);
+      });
+      document.body.appendChild(this.tl);
+    }
+  }, {
+    key: "hideTaglist",
+    value: function hideTaglist() {
+      if (this.tl) {
+        document.body.removeChild(this.tl);
+        delete this.tl;
+      }
+    }
+  }, {
+    key: "selectTaglist",
+    value: function selectTaglist(element, tag) {
+      element.innerHTML = '#' + tag.tag;
+      element.style.background = tag.color ? tag.color : this.op.color;
+      this.hideTaglist();
+      this.setCaretPosAfterNode(element);
     }
   }]);
 
