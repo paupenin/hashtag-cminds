@@ -44,10 +44,10 @@ Option | Description | Required
 
 Event | Description | Callback
 --- | --- | ---
-`change` | Triggers when content changes | (object, element, previous_content, new_content)
+`change` | Triggers when content changes | (object, element, content)
 `dropdown.show` | Triggers after dropdown is shown | (object, element, dropdown)
-`dropdown.hide` | Triggers after dropdown is hidden  | (object, element, dropdown)
-`dropdown.select` | Triggers after tag is selected  | (object, element, dropdown, tag)
+`dropdown.hide` | Triggers after dropdown is hidden  | (object, element)
+`dropdown.select` | Triggers after tag is selected  | (object, element, span, tag)
 
 ## Development
 

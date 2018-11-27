@@ -129,6 +129,8 @@ class hashtagHelper {
             this.setContent(this.ce.innerText)
             this.createContentTags()
             this.checkTaglist()
+
+            this.trigger('change', this, this.el, this.getElementValue())
         }, false)
     }
 
@@ -248,12 +250,16 @@ class hashtagHelper {
         })
 
         document.body.appendChild(this.tl)
+
+        this.trigger('dropdown.show', this, this.el, this.tl)
     }
 
     hideTaglist() {
         if (this.tl) {
             document.body.removeChild(this.tl)
             delete this.tl
+
+            this.trigger('dropdown.hide', this, this.el)
         }
     }
 
@@ -263,7 +269,28 @@ class hashtagHelper {
 
         this.hideTaglist()
         this.setCaretPosAfterNode(element)
+
+        this.trigger('dropdown.select', this, this.el, element, tag)
     }
+
+    /**
+     * Events
+     */
+    on(name, callback) {
+        if (! this.events) this.events = {}
+        if (! this.events[name]) this.events[name] = []
+
+        this.events[name].push(callback)
+    }
+
+    trigger(name, ...args) {
+        if (! this.events || ! this.events[name]) return
+
+        this.events[name].forEach((event) => {
+            event(...args)
+        })
+    }
+
 }
 
 window.hashtagCM = (element, options) => {

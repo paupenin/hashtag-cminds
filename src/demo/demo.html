@@ -19,7 +19,8 @@
           <h1 class="mt-5">Hashtag helper for Collective Minds Radiology</h1>
 
           <textarea id="my-textarea" class="w100 mt-5 p-3 border" style="height: 200px">Lorem ipsum dolor sit amet, #pain consectetur adipiscing elit, #liver sed do eiusmod tempor incididunt ut labore et dolore #left. magna#right aliqua. #pancreas,#brain #kidney.
-Ut enim ad minim veniam, quis nostrud exercitation #severe_pain ullamco laboris #new_tag nisi ut aliquip ex #another-tag, #tag&tag ea commodo #tumour & #cancer</textarea>
+Ut enim ad minim veniam, quis nostrud exercitation #severe_pain ullamco laboris #new_tag nisi ut aliquip ex #another-tag, #tag&tag ea commodo #tumour & #cancer.
+#p</textarea>
         </div>
       </div>
     </div>
@@ -29,7 +30,25 @@ Ut enim ad minim veniam, quis nostrud exercitation #severe_pain ullamco laboris 
     <script src="./hashtag-cminds.js"></script>
     <script>
       // Start hashtagCM on textarea with default options for demo
-      hashtagCM('#my-textarea', options);
+      var hashtagCMObject = hashtagCM('#my-textarea', options);
+      
+      /*
+      hashtagCMObject.on("change", function(object, element, content){
+        console.log("change", object, element, content);
+      });
+      
+      hashtagCMObject.on("dropdown.show", function(object, element, dropdown){
+        console.log("dropdown.show", object, element, dropdown);
+      });
+      
+      hashtagCMObject.on("dropdown.hide", function(object, element, dropdown){
+        console.log("dropdown.hide", object, element, dropdown);
+      });
+      
+      hashtagCMObject.on("dropdown.select", function(object, element, tag_element, tag){
+        console.log("dropdown.select", object, element, tag_element, tag);
+      });
+      */
     </script>
   </body>
 </html>

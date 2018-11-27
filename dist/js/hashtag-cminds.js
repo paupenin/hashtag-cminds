@@ -159,6 +159,8 @@ function () {
         _this4.createContentTags();
 
         _this4.checkTaglist();
+
+        _this4.trigger('change', _this4, _this4.el, _this4.getElementValue());
       }, false);
     }
     /**
@@ -283,6 +285,7 @@ function () {
         _this5.tl.appendChild(li);
       });
       document.body.appendChild(this.tl);
+      this.trigger('dropdown.show', this, this.el, this.tl);
     }
   }, {
     key: "hideTaglist",
@@ -290,6 +293,7 @@ function () {
       if (this.tl) {
         document.body.removeChild(this.tl);
         delete this.tl;
+        this.trigger('dropdown.hide', this, this.el);
       }
     }
   }, {
@@ -299,6 +303,30 @@ function () {
       element.style.background = tag.color ? tag.color : this.op.color;
       this.hideTaglist();
       this.setCaretPosAfterNode(element);
+      this.trigger('dropdown.select', this, this.el, element, tag);
+    }
+    /**
+     * Events
+     */
+
+  }, {
+    key: "on",
+    value: function on(name, callback) {
+      if (!this.events) this.events = {};
+      if (!this.events[name]) this.events[name] = [];
+      this.events[name].push(callback);
+    }
+  }, {
+    key: "trigger",
+    value: function trigger(name) {
+      for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        args[_key - 1] = arguments[_key];
+      }
+
+      if (!this.events || !this.events[name]) return;
+      this.events[name].forEach(function (event) {
+        event.apply(void 0, args);
+      });
     }
   }]);
 
