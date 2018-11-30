@@ -45,6 +45,9 @@ class hashtagHelper {
 
         // Show Taglist if in valid tag
         this.checkTaglist()
+
+        // Nomalize content on textarea
+        this.setContent(this.getContentValue())
     }
 
     /**
@@ -63,7 +66,7 @@ class hashtagHelper {
     createContentTags() {
         let content = this.getHtmlContent()
 
-        if (this.normalize(content) != this.normalize(this.getContentValue())) {
+        if (this.normalize(content) != this.normalize(this.getContentHtml())) {
             let caret_position = this.getCaretPos()
 
             this.ce.innerHTML = content
@@ -81,11 +84,17 @@ class hashtagHelper {
     }
 
     getContentValue() {
+        return this.ce.innerText
+    }
+
+    getContentHtml() {
         return this.ce.innerHTML
     }
 
     getHtmlContent() {
-        return '<div>'+this.getHtmlTags().replace(/\n/g,'</div><div>')+'</div>'.replace(/<div><\/div>/g, '')
+        return ('<div>'+this.getHtmlTags().replace(/\n/g,'</div><div>')+'</div>')
+                .replace(/(<div><\/div>){2,}/g, '<div></div>')
+                .replace(/(<div><\/div>)/g, '<div>&nbsp;</div>')
     }
 
     getHtmlTags() {
@@ -126,7 +135,7 @@ class hashtagHelper {
 
     bindContentEditable() {
         this.ce.addEventListener("input", () => {
-            this.setContent(this.ce.innerText)
+            this.setContent(this.getContentValue())
             this.createContentTags()
             this.checkTaglist()
 
@@ -167,7 +176,7 @@ class hashtagHelper {
         let node, nodes = this.getAllTextnodes()
 
         for (let i in nodes) {
-            if (position - nodes[i].length > 0) {
+            if (position - nodes[i].length >= 0) {
                 position -= nodes[i].length
             } else {
                 node = nodes[i]

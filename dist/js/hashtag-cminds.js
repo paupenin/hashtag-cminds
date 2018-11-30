@@ -60,7 +60,9 @@ function () {
 
       this.setCaretPos(this.getElementValue().length); // Show Taglist if in valid tag
 
-      this.checkTaglist();
+      this.checkTaglist(); // Nomalize content on textarea
+
+      this.setContent(this.getContentValue());
     }
     /**
      * Content Editable functions
@@ -80,7 +82,7 @@ function () {
     value: function createContentTags() {
       var content = this.getHtmlContent();
 
-      if (this.normalize(content) != this.normalize(this.getContentValue())) {
+      if (this.normalize(content) != this.normalize(this.getContentHtml())) {
         var caret_position = this.getCaretPos();
         this.ce.innerHTML = content;
         this.setCaretPos(caret_position);
@@ -99,12 +101,17 @@ function () {
   }, {
     key: "getContentValue",
     value: function getContentValue() {
+      return this.ce.innerText;
+    }
+  }, {
+    key: "getContentHtml",
+    value: function getContentHtml() {
       return this.ce.innerHTML;
     }
   }, {
     key: "getHtmlContent",
     value: function getHtmlContent() {
-      return '<div>' + this.getHtmlTags().replace(/\n/g, '</div><div>') + '</div>'.replace(/<div><\/div>/g, '');
+      return ('<div>' + this.getHtmlTags().replace(/\n/g, '</div><div>') + '</div>').replace(/(<div><\/div>){2,}/g, '<div></div>').replace(/(<div><\/div>)/g, '<div>&nbsp;</div>');
     }
   }, {
     key: "getHtmlTags",
@@ -154,7 +161,7 @@ function () {
       var _this4 = this;
 
       this.ce.addEventListener("input", function () {
-        _this4.setContent(_this4.ce.innerText);
+        _this4.setContent(_this4.getContentValue());
 
         _this4.createContentTags();
 
@@ -208,7 +215,7 @@ function () {
           nodes = this.getAllTextnodes();
 
       for (var i in nodes) {
-        if (position - nodes[i].length > 0) {
+        if (position - nodes[i].length >= 0) {
           position -= nodes[i].length;
         } else {
           node = nodes[i];
