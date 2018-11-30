@@ -9,6 +9,10 @@ The resulting field should:
 2. format the tags in a different style/color
 3. format also new tags not existing in the list
 
+## Demo
+
+[http://cminds.paupenin.com/](http://cminds.paupenin.com/)
+
 ## Usage
 
 ```html
@@ -37,8 +41,6 @@ Option | Description | Required
 `tag` | Text to show and match | true
 `color` | Color for tag | false
 
-
-## Methods
 
 ## Events
 
