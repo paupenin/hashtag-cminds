@@ -63,13 +63,18 @@ class hashtagHelper {
         this.el.parentElement.appendChild(this.ce)
     }
 
-    createContentTags() {
-        let content = this.getHtmlContent()
+    createContentTags(event = null) {
+        let content = this.generateHtml()()
 
         if (this.normalize(content) != this.normalize(this.getContentHtml())) {
             let caret_position = this.getCaretPos()
 
             this.ce.innerHTML = content
+
+            if (this.isInputEnter(event)) {
+                this.setCaretPos(caret_position, true)
+                return;
+            }
 
             this.setCaretPos(caret_position)
         }
@@ -91,13 +96,13 @@ class hashtagHelper {
         return this.ce.innerHTML
     }
 
-    getHtmlContent() {
-        return ('<div>'+this.getHtmlTags().replace(/\n/g,'</div><div>')+'</div>')
+    generateHtml() {
+        return ('<div>'+this.generateTags()().replace(/\n/g,'</div><div>')+'</div>')
                 .replace(/(<div><\/div>){2,}/g, '<div></div>')
                 .replace(/(<div><\/div>)/g, '<div>&nbsp;</div>')
     }
 
-    getHtmlTags() {
+    generateTags() {
         return this.getElementValue().replace(/(#[\w\-&]*)/g, (str, match) => {
             let tag = this.findTag(match)
 
@@ -134,13 +139,17 @@ class hashtagHelper {
     }
 
     bindContentEditable() {
-        this.ce.addEventListener("input", () => {
+        this.ce.addEventListener("input", (event) => {
             this.setContent(this.getContentValue())
-            this.createContentTags()
+            this.createContentTags(event)
             this.checkTaglist()
 
             this.trigger('change', this, this.el, this.getElementValue())
         }, false)
+    }
+
+    isInputEnter(event) {
+        return event && (event.keyCode == 13 || event.inputType == "insertParagraph")
     }
 
     /**
@@ -167,7 +176,7 @@ class hashtagHelper {
         return document.getSelection().getRangeAt(0).startContainer.parentElement
     }
 
-    setCaretPos(position) {
+    setCaretPos(position, next_node = false) {
         this.ce.focus()
 
         if (position <= 0) return;
@@ -176,7 +185,7 @@ class hashtagHelper {
         let node, nodes = this.getAllTextnodes()
 
         for (let i in nodes) {
-            if (position - nodes[i].length >= 0) {
+            if (position - nodes[i].length > 0 || (next_node && position - nodes[i].length == 0)) {
                 position -= nodes[i].length
             } else {
                 node = nodes[i]

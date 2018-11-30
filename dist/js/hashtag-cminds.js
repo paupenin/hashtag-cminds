@@ -80,11 +80,18 @@ function () {
   }, {
     key: "createContentTags",
     value: function createContentTags() {
-      var content = this.getHtmlContent();
+      var event = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+      var content = this.generateHtml()();
 
       if (this.normalize(content) != this.normalize(this.getContentHtml())) {
         var caret_position = this.getCaretPos();
         this.ce.innerHTML = content;
+
+        if (this.isInputEnter(event)) {
+          this.setCaretPos(caret_position, true);
+          return;
+        }
+
         this.setCaretPos(caret_position);
       }
     }
@@ -109,13 +116,13 @@ function () {
       return this.ce.innerHTML;
     }
   }, {
-    key: "getHtmlContent",
-    value: function getHtmlContent() {
-      return ('<div>' + this.getHtmlTags().replace(/\n/g, '</div><div>') + '</div>').replace(/(<div><\/div>){2,}/g, '<div></div>').replace(/(<div><\/div>)/g, '<div>&nbsp;</div>');
+    key: "generateHtml",
+    value: function generateHtml() {
+      return ('<div>' + this.generateTags()().replace(/\n/g, '</div><div>') + '</div>').replace(/(<div><\/div>){2,}/g, '<div></div>').replace(/(<div><\/div>)/g, '<div>&nbsp;</div>');
     }
   }, {
-    key: "getHtmlTags",
-    value: function getHtmlTags() {
+    key: "generateTags",
+    value: function generateTags() {
       var _this = this;
 
       return this.getElementValue().replace(/(#[\w\-&]*)/g, function (str, match) {
@@ -160,15 +167,20 @@ function () {
     value: function bindContentEditable() {
       var _this4 = this;
 
-      this.ce.addEventListener("input", function () {
+      this.ce.addEventListener("input", function (event) {
         _this4.setContent(_this4.getContentValue());
 
-        _this4.createContentTags();
+        _this4.createContentTags(event);
 
         _this4.checkTaglist();
 
         _this4.trigger('change', _this4, _this4.el, _this4.getElementValue());
       }, false);
+    }
+  }, {
+    key: "isInputEnter",
+    value: function isInputEnter(event) {
+      return event && (event.keyCode == 13 || event.inputType == "insertParagraph");
     }
     /**
      * Caret position
@@ -208,6 +220,7 @@ function () {
   }, {
     key: "setCaretPos",
     value: function setCaretPos(position) {
+      var next_node = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
       this.ce.focus();
       if (position <= 0) return; // Get node element
 
@@ -215,7 +228,7 @@ function () {
           nodes = this.getAllTextnodes();
 
       for (var i in nodes) {
-        if (position - nodes[i].length >= 0) {
+        if (position - nodes[i].length > 0 || next_node && position - nodes[i].length == 0) {
           position -= nodes[i].length;
         } else {
           node = nodes[i];
