@@ -64,7 +64,7 @@ class hashtagHelper {
     }
 
     createContentTags(event = null) {
-        let content = this.generateHtml()()
+        let content = this.generateHtml()
 
         if (this.normalize(content) != this.normalize(this.getContentHtml())) {
             let caret_position = this.getCaretPos()
@@ -97,7 +97,7 @@ class hashtagHelper {
     }
 
     generateHtml() {
-        return ('<div>'+this.generateTags()().replace(/\n/g,'</div><div>')+'</div>')
+        return ('<div>'+this.generateTags().replace(/\n/g,'</div><div>')+'</div>')
                 .replace(/(<div><\/div>){2,}/g, '<div></div>')
                 .replace(/(<div><\/div>)/g, '<div>&nbsp;</div>')
     }

@@ -81,7 +81,7 @@ function () {
     key: "createContentTags",
     value: function createContentTags() {
       var event = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-      var content = this.generateHtml()();
+      var content = this.generateHtml();
 
       if (this.normalize(content) != this.normalize(this.getContentHtml())) {
         var caret_position = this.getCaretPos();
@@ -118,7 +118,7 @@ function () {
   }, {
     key: "generateHtml",
     value: function generateHtml() {
-      return ('<div>' + this.generateTags()().replace(/\n/g, '</div><div>') + '</div>').replace(/(<div><\/div>){2,}/g, '<div></div>').replace(/(<div><\/div>)/g, '<div>&nbsp;</div>');
+      return ('<div>' + this.generateTags().replace(/\n/g, '</div><div>') + '</div>').replace(/(<div><\/div>){2,}/g, '<div></div>').replace(/(<div><\/div>)/g, '<div>&nbsp;</div>');
     }
   }, {
     key: "generateTags",
