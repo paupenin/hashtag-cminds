@@ -11,7 +11,7 @@ The resulting field should:
 
 ## Demo
 
-[http://cminds.paupenin.com/](http://cminds.paupenin.com/)
+[https://cminds.paupenin.com/](https://cminds.paupenin.com/)
 
 ## Usage
 
